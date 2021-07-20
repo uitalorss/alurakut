@@ -2,7 +2,9 @@ import React from 'react';
 import MainGrid from '../src/components/MainGrid';
 import Box from '../src/components/Box';
 import { AlurakutMenu, OrkutNostalgicIconSet, AlurakutProfileSidebarMenuDefault  } from '../src/lib/AlurakutCommons';
-import { ProfileRelationsBoxWrapper } from '../src/components/Relations'
+import { ProfileRelationsBoxWrapper } from '../src/components/Relations';
+import nookies from 'nookies';
+import jwt from 'jsonwebtoken';
 
 function ProfileSideBar(props){
   console.log(props)
@@ -20,8 +22,8 @@ function ProfileSideBar(props){
 }
 
 
-export default function Home() {
-  const user = 'uitallorss';
+export default function Home(props) {
+  const user = props.githubUser;
   const [comunidades, setComunidades] = React.useState([{
     //id: '2021-07-14T02:43:44.677Z',
     //title: 'Esporte Clube Bahia',
@@ -100,7 +102,7 @@ export default function Home() {
                },
                body: JSON.stringify(novaComunidade)
              }).then(async (response) => {
-               const dados = response.json();
+               const dados = await response.json();
                console.log(dados.registroCriado);
                const novaComunidade = dados.registroCriado; 
                const atualizaComunidades = [...comunidades, novaComunidade]
@@ -171,4 +173,16 @@ export default function Home() {
       </MainGrid>
     </>
     )
+}
+
+export async function getServerSideProps(context){
+  const cookies = nookies.get(context);
+  const token = cookies.USER_TOKEN;
+  console.log('token decodificado', jwt.decode(token))
+  const githubUser = jwt.decode(token).githubUser;
+  return{
+    props: {
+      githubUser
+    },
+  }
 }
