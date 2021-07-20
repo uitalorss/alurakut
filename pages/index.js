@@ -7,7 +7,6 @@ import nookies from 'nookies';
 import jwt from 'jsonwebtoken';
 
 function ProfileSideBar(props){
-  console.log(props)
   return(
     <Box>
       <img src={`https://github.com/${props.githubUser}.png`} style={{borderRadius: '6px'}}/>
@@ -29,7 +28,6 @@ export default function Home(props) {
     //title: 'Esporte Clube Bahia',
     //image: 'https://www.ecbahia.com/global/fotos/camisa201113-1.jpg'
   }]);
-  console.log(comunidades);
   const seguidores = [
     'fhdupuydelome',
     'matheusduplat',
@@ -61,7 +59,6 @@ export default function Home(props) {
     }).then((dataResponse) => {
       const dadosComunidades = dataResponse.data.allCommunities;
       setComunidades(dadosComunidades);
-      console.log(dataResponse)
     })
   })
   
@@ -86,9 +83,6 @@ export default function Home(props) {
               e.preventDefault();
               const dadosForm = new FormData(e.target);
 
-             console.log('Campo: ', dadosForm.get('title'));
-             console.log('Campo: ', dadosForm.get('image'));
-
              const novaComunidade = {
                title: dadosForm.get('title'),
                imageUrl: dadosForm.get('image'),
@@ -103,7 +97,6 @@ export default function Home(props) {
                body: JSON.stringify(novaComunidade)
              }).then(async (response) => {
                const dados = await response.json();
-               console.log(dados.registroCriado);
                const novaComunidade = dados.registroCriado; 
                const atualizaComunidades = [...comunidades, novaComunidade]
                setComunidades(atualizaComunidades);
@@ -178,7 +171,6 @@ export default function Home(props) {
 export async function getServerSideProps(context){
   const cookies = nookies.get(context);
   const token = cookies.USER_TOKEN;
-  console.log('token decodificado', jwt.decode(token))
   const githubUser = jwt.decode(token).githubUser;
   return{
     props: {
